@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Profiles collection rules
+    match /profiles/{profileId} {
+      // Users can read and write their own profiles
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      
+      // Public read access for emergency profiles (for first responders)
+      allow read: if true; // This allows public access to emergency profiles
+      
+      // Users can create their own profiles
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+      
+      // Users can update their own profiles
+      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+      
+      // Users can delete their own profiles
+      allow delete: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+  }
+} 
