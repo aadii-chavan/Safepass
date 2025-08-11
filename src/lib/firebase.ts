@@ -4,13 +4,14 @@ import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, u
 import { getStorage } from 'firebase/storage';
 import { EmergencyProfile } from '../types';
 
+// Firebase config should be loaded from environment variables for security
 const firebaseConfig = {
-  apiKey: "AIzaSyC880g98hUP8tdxTwqjhW72vxbXeshL9Qs",
-  authDomain: "my-life-id.firebaseapp.com",
-  projectId: "my-life-id",
-  storageBucket: "my-life-id.firebasestorage.app",
-  messagingSenderId: "773090033758",
-  appId: "1:773090033758:web:f382bdbadebe2aacd7f4cf"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
