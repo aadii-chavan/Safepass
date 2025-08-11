@@ -15,8 +15,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, isSignUp }) 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
-  const { login, signup } = useAuth();
+  const [showReset, setShowReset] = useState(false); // <-- New state
+  const [resetEmail, setResetEmail] = useState(''); // <-- New state
+  const [resetLoading, setResetLoading] = useState(false); // <-- New state
+  const [resetMessage, setResetMessage] = useState(''); // <-- New state
+
+  const { login, signup, resetPassword } = useAuth(); // <-- Add resetPassword
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +47,22 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, isSignUp }) 
       setError(err.message || 'Authentication failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Password reset handler
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetMessage('');
+    setError('');
+    setResetLoading(true);
+    try {
+      await resetPassword(resetEmail);
+      setResetMessage('Password reset email sent! Check your inbox.');
+    } catch (err: any) {
+      setError(err.message || 'Failed to send reset email');
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -172,6 +192,53 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode, isSignUp }) 
               )}
             </button>
           </form>
+
+          {/* Forgot Password Link & Reset Form */}
+          {!isSignUp && (
+            <div className="mt-4 text-center">
+              {!showReset ? (
+                <button
+                  type="button"
+                  className="text-blue-600 hover:underline text-sm font-medium"
+                  onClick={() => {
+                    setShowReset(true);
+                    setResetMessage('');
+                    setError('');
+                    setResetEmail(email); // prefill if user typed email
+                  }}
+                >
+                  Forgot Password?
+                </button>
+              ) : (
+                <form onSubmit={handleResetPassword} className="mt-2 space-y-2">
+                  <input
+                    type="email"
+                    value={resetEmail}
+                    onChange={e => setResetEmail(e.target.value)}
+                    className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-slate-50/50 text-slate-900 placeholder-slate-400"
+                    placeholder="Enter your email"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    disabled={resetLoading}
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-200 disabled:opacity-50"
+                  >
+                    {resetLoading ? 'Sending...' : 'Send Reset Email'}
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full text-xs text-slate-500 hover:underline mt-1"
+                    onClick={() => setShowReset(false)}
+                  >
+                    Cancel
+                  </button>
+                  {resetMessage && <div className="text-green-600 text-xs text-center mt-1">{resetMessage}</div>}
+                  {error && <div className="text-red-600 text-xs text-center mt-1">{error}</div>}
+                </form>
+              )}
+            </div>
+          )}
 
           <div className="mt-6 text-center">
             <button
