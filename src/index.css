@@ -1,3 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    background-color: theme('colors.background.DEFAULT');
+    color: theme('colors.white');
+  }
+  body {
+    background-color: theme('colors.background.DEFAULT');
+    color: theme('colors.white');
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+  }
+  ::selection {
+    background: theme('colors.accent.DEFAULT');
+    color: theme('colors.white');
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    background: theme('colors.background.light');
+  }
+  ::-webkit-scrollbar-thumb {
+    background: theme('colors.card.DEFAULT');
+    border-radius: 4px;
+  }
+}
